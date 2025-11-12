@@ -1,0 +1,16 @@
+metadata:
+  id: "CKV_SCW_8"
+  name: "LB backend: sticky_sessions=cookie → sticky_sessions_cookie_name requis"
+  category: "NETWORKING"
+scope:
+  provider: "terraform"
+definition:
+  and:
+    - resource_types: ["scaleway_lb_backend"]
+      cond_type: "attribute"
+      attribute: "sticky_sessions"
+      operator: "equals"
+      value: "cookie"
+    - cond_type: "attribute"
+      attribute: "sticky_sessions_cookie_name"
+      operator: "exists"

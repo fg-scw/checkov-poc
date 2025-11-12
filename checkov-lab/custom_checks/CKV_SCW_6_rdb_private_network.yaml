@@ -1,0 +1,12 @@
+metadata:
+  id: "CKV_SCW_6"
+  name: "RDB: doit être rattaché à un Private Network"
+  category: "NETWORKING"
+scope:
+  provider: "terraform"
+definition:
+  and:
+    - resource_types: ["scaleway_rdb_instance"]
+      cond_type: "attribute"
+      attribute: "private_network"
+      operator: "exists"

@@ -1,0 +1,16 @@
+metadata:
+  id: "CKV_SCW_5"
+  name: "RDB: backups activés (disable_backup=false)"
+  category: "DATABASE"
+scope:
+  provider: "terraform"
+definition:
+  and:
+    - resource_types: ["scaleway_rdb_instance"]
+      cond_type: "attribute"
+      attribute: "disable_backup"
+      operator: "exists"
+    - cond_type: "attribute"
+      attribute: "disable_backup"
+      operator: "equals"
+      value: false

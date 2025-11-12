@@ -1,0 +1,6 @@
+framework: ["terraform"]
+external-checks-dir: "custom_checks"
+evaluate-variables: true
+var-file: "terraform.tfvars"
+output: "cli"
+download-external-modules: false

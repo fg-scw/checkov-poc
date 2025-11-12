@@ -1,0 +1,20 @@
+metadata:
+  id: "CKV_SCW_7"
+  name: "LB frontend 443: certificat requis (certificate_ids non vide)"
+  category: "NETWORKING"
+scope:
+  provider: "terraform"
+definition:
+  and:
+    - resource_types: ["scaleway_lb_frontend"]
+      cond_type: "attribute"
+      attribute: "inbound_port"
+      operator: "equals"
+      value: 443
+    - cond_type: "attribute"
+      attribute: "certificate_ids"
+      operator: "exists"
+    - cond_type: "attribute"
+      attribute: "certificate_ids"
+      operator: "not_equals"
+      value: []

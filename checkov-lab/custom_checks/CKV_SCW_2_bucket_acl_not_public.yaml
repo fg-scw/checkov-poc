@@ -1,0 +1,20 @@
+metadata:
+  id: "CKV_SCW_2"
+  name: "Interdire les ACL publiques sur les buckets (public-read/public-read-write)"
+  category: "STORAGE"
+scope:
+  provider: "terraform"
+definition:
+  and:
+    - resource_types: ["scaleway_object_bucket_acl"]
+      cond_type: "attribute"
+      attribute: "acl"
+      operator: "exists"
+    - cond_type: "attribute"
+      attribute: "acl"
+      operator: "not_equals"
+      value: "public-read"
+    - cond_type: "attribute"
+      attribute: "acl"
+      operator: "not_equals"
+      value: "public-read-write"

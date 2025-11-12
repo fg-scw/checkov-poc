@@ -1,0 +1,17 @@
+metadata:
+  id: "CKV_SCW_10"
+  name: "SG: inbound_default_policy=drop et stateful=true"
+  category: "NETWORKING"
+scope:
+  provider: "terraform"
+definition:
+  and:
+    - resource_types: ["scaleway_instance_security_group"]
+      cond_type: "attribute"
+      attribute: "inbound_default_policy"
+      operator: "equals"
+      value: "drop"
+    - cond_type: "attribute"
+      attribute: "stateful"
+      operator: "equals"
+      value: true

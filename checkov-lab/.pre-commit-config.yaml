@@ -1,0 +1,14 @@
+repos:
+  - repo: https://github.com/bridgecrewio/checkov
+    rev: v3.2.493
+    hooks:
+      - id: checkov
+        name: checkov (terraform + règles custom)
+        args:
+          - --framework
+          - terraform
+          - --download-external-modules
+          - "false"
+          - --external-checks-dir
+          - custom_checks
+          - --evaluate-variables

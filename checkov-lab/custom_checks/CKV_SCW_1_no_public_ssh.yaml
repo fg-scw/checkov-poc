@@ -1,0 +1,29 @@
+metadata:
+  id: "CKV_SCW_1"
+  name: "Interdire SSH public (0.0.0.0/0) dans scaleway_instance_security_group"
+  category: "NETWORKING"
+scope:
+  provider: "terraform"
+definition:
+  and:
+    - resource_types: ["scaleway_instance_security_group"]
+      cond_type: "attribute"
+      attribute: "inbound_rule"
+      operator: "exists"
+    # PASS si (A) aucun port 22 n'est ouvert OU (B) port 22 existe mais n'est pas ouvert au monde
+    - or:
+        # (A) pas de port 22 du tout
+        - cond_type: "attribute"
+          attribute: "inbound_rule[*].port"
+          operator: "not_contains"
+          value: 22
+        # (B) port 22 présent, mais ip_range != 0.0.0.0/0
+        - and:
+            - cond_type: "attribute"
+              attribute: "inbound_rule[*].port"
+              operator: "contains"
+              value: 22
+            - cond_type: "attribute"
+              attribute: "inbound_rule[*].ip_range"
+              operator: "not_contains"
+              value: "0.0.0.0/0"

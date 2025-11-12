@@ -1,0 +1,16 @@
+metadata:
+  id: "CKV_SCW_9"
+  name: "K8s: delete_additional_resources activé (nettoyage automatique des ressources associées)"
+  category: "KUBERNETES"
+scope:
+  provider: "terraform"
+definition:
+  and:
+    - resource_types: ["scaleway_k8s_cluster"]
+      cond_type: "attribute"
+      attribute: "delete_additional_resources"
+      operator: "exists"
+    - cond_type: "attribute"
+      attribute: "delete_additional_resources"
+      operator: "equals"
+      value: true
