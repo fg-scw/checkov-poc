@@ -93,6 +93,7 @@ Scanner les “bad configs” pour voir Checkov en action :
 make scan-bad
 ```
 
+```bash
 checkov-lab git:(main) ✗ make scan-bad
 checkov -d tests/bad --framework terraform \
                 --external-checks-dir custom_checks \
@@ -107,9 +108,6 @@ checkov -d tests/bad --framework terraform \
   \___|_| |_|\___|\___|_|\_\___/ \_/
 
 By Prisma Cloud | version: 3.2.490 
-Update available 3.2.490 -> 3.2.493
-Run pip3 install -U checkov to update 
-
 
 terraform scan results:
 
@@ -240,6 +238,8 @@ Check: CKV_SCW_9: "K8s: delete_additional_resources activé (nettoyage automatiq
 
 
 make: *** [scan-bad] Error 1
+```
+
 
 Ce dossier contient des exemples qui **échouent** explicitement nos règles :
 - **CKV_SCW_1** : SSH ouvert au monde (0.0.0.0/0) dans un SG.
