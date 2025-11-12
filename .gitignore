@@ -1,0 +1,15 @@
+# .gitignore
+# Terraform
+.terraform/
+.terraform.lock.hcl
+*.tfstate
+*.tfstate.*
+crash.log
+override.tf
+override.tf.json
+*.override.tf
+*.override.tf.json
+terraform.tfvars
+*.tfvars
+# macOS
+.DS_Store
