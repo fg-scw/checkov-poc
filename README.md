@@ -92,6 +92,155 @@ Scanner les “bad configs” pour voir Checkov en action :
 ```bash
 make scan-bad
 ```
+
+checkov-lab git:(main) ✗ make scan-bad
+checkov -d tests/bad --framework terraform \
+                --external-checks-dir custom_checks \
+                --evaluate-variables true --var-file=terraform.tfvars
+[ terraform framework ]: 100%|████████████████████|[5/5], Current File Scanned=tests/bad/storage_bad.tf
+
+
+       _               _
+   ___| |__   ___  ___| | _______   __
+  / __| '_ \ / _ \/ __| |/ / _ \ \ / /
+ | (__| | | |  __/ (__|   < (_) \ V /
+  \___|_| |_|\___|\___|_|\_\___/ \_/
+
+By Prisma Cloud | version: 3.2.490 
+Update available 3.2.490 -> 3.2.493
+Run pip3 install -U checkov to update 
+
+
+terraform scan results:
+
+Passed checks: 1, Failed checks: 9, Skipped checks: 0
+
+Check: CKV_SCW_1: "Interdire SSH public (0.0.0.0/0) dans scaleway_instance_security_group"
+        PASSED for resource: scaleway_instance_security_group.bad_sg
+        File: /sg_bad.tf:1-14
+Check: CKV_SCW_3: "Activer le versioning sur les buckets"
+        FAILED for resource: scaleway_object_bucket.public_assets
+        File: /storage_bad.tf:1-4
+
+                1 | resource "scaleway_object_bucket" "public_assets" {
+                2 |   name   = "demo-public-assets-ckv-bad"
+                3 |   region = "fr-par"
+                4 | }
+
+Check: CKV_SCW_7: "LB frontend 443: certificat requis (certificate_ids non vide)"
+        FAILED for resource: scaleway_lb_frontend.https
+        File: /lb_bad.tf:15-20
+
+                15 | resource "scaleway_lb_frontend" "https" {
+                16 |   lb_id        = scaleway_lb.web.id
+                17 |   name         = "https"
+                18 |   inbound_port = 443
+                19 |   backend_id   = scaleway_lb_backend.web_be.id
+                20 | }
+
+Check: CKV_SCW_6: "RDB: doit être rattaché à un Private Network"
+        FAILED for resource: scaleway_rdb_instance.pg
+        File: /rdb_bad.tf:1-11
+
+                1  | resource "scaleway_rdb_instance" "pg" {
+                2  |   name                = "bad-pg"
+                3  |   engine              = "PostgreSQL-15"
+                4  |   node_type           = "DB-DEV-S"
+                5  |   is_ha_cluster       = false
+                6  |   user_name           = "app"
+                7  |   password            = "Ch@ngeMe-123"
+                8  | 
+                9  |   encryption_at_rest  = false
+                10 |   disable_backup      = true
+                11 | }
+
+Check: CKV_SCW_4: "RDB: chiffrement au repos obligatoire"
+        FAILED for resource: scaleway_rdb_instance.pg
+        File: /rdb_bad.tf:1-11
+
+                1  | resource "scaleway_rdb_instance" "pg" {
+                2  |   name                = "bad-pg"
+                3  |   engine              = "PostgreSQL-15"
+                4  |   node_type           = "DB-DEV-S"
+                5  |   is_ha_cluster       = false
+                6  |   user_name           = "app"
+                7  |   password            = "Ch@ngeMe-123"
+                8  | 
+                9  |   encryption_at_rest  = false
+                10 |   disable_backup      = true
+                11 | }
+
+Check: CKV_SCW_5: "RDB: backups activés (disable_backup=false)"
+        FAILED for resource: scaleway_rdb_instance.pg
+        File: /rdb_bad.tf:1-11
+
+                1  | resource "scaleway_rdb_instance" "pg" {
+                2  |   name                = "bad-pg"
+                3  |   engine              = "PostgreSQL-15"
+                4  |   node_type           = "DB-DEV-S"
+                5  |   is_ha_cluster       = false
+                6  |   user_name           = "app"
+                7  |   password            = "Ch@ngeMe-123"
+                8  | 
+                9  |   encryption_at_rest  = false
+                10 |   disable_backup      = true
+                11 | }
+
+Check: CKV_SCW_2: "Interdire les ACL publiques sur les buckets (public-read/public-read-write)"
+        FAILED for resource: scaleway_object_bucket_acl.public_assets_acl
+        File: /storage_bad.tf:6-10
+
+                6  | resource "scaleway_object_bucket_acl" "public_assets_acl" {
+                7  |   bucket = scaleway_object_bucket.public_assets.name
+                8  |   region = "fr-par"
+                9  |   acl    = "public-read"
+                10 | }
+
+Check: CKV_SCW_10: "SG: inbound_default_policy=drop et stateful=true"
+        FAILED for resource: scaleway_instance_security_group.bad_sg
+        File: /sg_bad.tf:1-14
+
+                1  | resource "scaleway_instance_security_group" "bad_sg" {
+                2  |   name                    = "bad-sg"
+                3  |   zone                    = "fr-par-1"
+                4  |   inbound_default_policy  = "accept"
+                5  |   outbound_default_policy = "accept"
+                6  |   stateful                = false
+                7  | 
+                8  |   inbound_rule {
+                9  |     action   = "accept"
+                10 |     protocol = "TCP"
+                11 |     port     = 22
+                12 |     ip_range = "0.0.0.0/0"
+                13 |   }
+                14 | }
+
+Check: CKV_SCW_8: "LB backend: sticky_sessions=cookie → sticky_sessions_cookie_name requis"
+        FAILED for resource: scaleway_lb_backend.web_be
+        File: /lb_bad.tf:7-13
+
+                7  | resource "scaleway_lb_backend" "web_be" {
+                8  |   lb_id            = scaleway_lb.web.id
+                9  |   name             = "web-be"
+                10 |   forward_protocol = "http"
+                11 |   forward_port     = 80
+                12 |   sticky_sessions  = "cookie"
+                13 | }
+
+Check: CKV_SCW_9: "K8s: delete_additional_resources activé (nettoyage automatique des ressources associées)"
+        FAILED for resource: scaleway_k8s_cluster.bad
+        File: /k8s_bad.tf:1-6
+
+                1 | resource "scaleway_k8s_cluster" "bad" {
+                2 |   name                        = "k8s-bad"
+                3 |   version                     = "1.32.3"
+                4 |   cni                         = "calico"
+                5 |   delete_additional_resources = false
+                6 | }
+
+
+make: *** [scan-bad] Error 1
+
 Ce dossier contient des exemples qui **échouent** explicitement nos règles :
 - **CKV_SCW_1** : SSH ouvert au monde (0.0.0.0/0) dans un SG.
 - **CKV_SCW_2** : ACL de bucket publique.
