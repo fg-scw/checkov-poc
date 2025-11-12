@@ -1,12 +1,9 @@
-.PHONY: help scan scan-compact scan-json scan-sarif baseline precommit-install precommit-run update-checkov
+.PHONY: help scan scan-compact scan-json scan-sarif baseline precommit-install precommit-run update-checkov scan-bad
 
 CHECKOV := checkov
 EXT_DIR := custom_checks
 TFVARS ?= terraform.tfvars
-# ajoute automatiquement --var-file si le fichier existe
 TFVARS_FLAG := $(shell [ -f $(TFVARS) ] && echo "--var-file=$(TFVARS)")
-
-# Avec Checkov 3.2.490, --evaluate-variables attend un argument (true/false)
 EVAL ?= true
 
 help:
@@ -19,6 +16,7 @@ help:
 	@echo "  precommit-install - Installe pre-commit"
 	@echo "  precommit-run     - Lance pre-commit sur tout"
 	@echo "  update-checkov    - pip install -U checkov"
+	@echo "  scan-bad          - Scan sur tests/bad (génère volontairement des erreurs)"
 
 scan:
 	$(CHECKOV) -d . --framework terraform --external-checks-dir $(EXT_DIR) \
@@ -51,3 +49,8 @@ precommit-run:
 
 update-checkov:
 	pip install -U checkov
+
+scan-bad:
+	$(CHECKOV) -d tests/bad --framework terraform \
+		--external-checks-dir $(EXT_DIR) \
+		--evaluate-variables $(EVAL) $(TFVARS_FLAG)
